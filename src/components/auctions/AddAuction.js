@@ -1,5 +1,5 @@
-import { Button, Form, Modal, Alert, Row, Col } from 'react-bootstrap';
 import React, { useContext, useRef, useState } from 'react';
+import { Button, Form, Modal, Alert, Row, Col } from 'react-bootstrap';
 import { AuthContext } from '../../context/AuthContext';
 
 export const AddAuction = ({ setAuction }) => {
@@ -9,7 +9,8 @@ export const AddAuction = ({ setAuction }) => {
   const itemTitle = useRef();
   const itemDesc = useRef();
   const startPrice = useRef();
-  const itemDuration = useRef();
+  const hours = useRef();
+  const minutes = useRef();
   const itemImage = useRef();
 
   const { currentUser } = useContext(AuthContext);
@@ -28,16 +29,20 @@ export const AddAuction = ({ setAuction }) => {
     }
 
     let currentDate = new Date();
-    let dueDate = currentDate.setHours(
-      currentDate.getHours() + itemDuration.current.value
-    );
+
+    let dueDate = new Date(currentDate);
+    let hoursValue = parseInt(hours.current.value) || 0; // Default to 0 if empty
+    let minutesValue = parseInt(minutes.current.value) || 0; // Default to 0 if empty
+
+    dueDate.setHours(currentDate.getHours() + hoursValue);
+    dueDate.setMinutes(currentDate.getMinutes() + minutesValue);
 
     let newAuction = {
       email: currentUser.email,
       title: itemTitle.current.value,
       desc: itemDesc.current.value,
       curPrice: startPrice.current.value,
-      duration: dueDate,
+      duration: dueDate.getTime(), // Store as timestamp
       itemImage: itemImage.current.files[0],
     };
 
@@ -82,8 +87,15 @@ export const AddAuction = ({ setAuction }) => {
               </Col>
               <Col>
                 <Form.Group>
-                  <Form.Label>Item Duration in hours</Form.Label>
-                  <Form.Control type="number" required ref={itemDuration} />
+                  <Form.Label>Item Duration</Form.Label>
+                  <Row>
+                    <Col>
+                      <Form.Control type="number" placeholder="Hours" min="0" ref={hours} />
+                    </Col>
+                    <Col>
+                      <Form.Control type="number" placeholder="Minutes" min="0" max="59" ref={minutes} />
+                    </Col>
+                  </Row>
                 </Form.Group>
               </Col>
             </Row>
@@ -91,22 +103,13 @@ export const AddAuction = ({ setAuction }) => {
               <Col>
                 <Form.Group>
                   <Form.Label>Seller</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={currentUser.email}
-                    readOnly
-                  />
+                  <Form.Control type="text" value={currentUser.email} readOnly />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group>
                   <Form.Label>Item Image</Form.Label>
-                  <Form.File
-                    label="Select Item Image"
-                    custom
-                    required
-                    ref={itemImage}
-                  />
+                  <Form.File label="Select Item Image" custom required ref={itemImage} />
                 </Form.Group>
               </Col>
             </Row>

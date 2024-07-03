@@ -24,7 +24,7 @@ export const NavComp = () => {
                   onClick={() => logout()}
                   className="btn btn-outline-secondary mx-2"
                 >
-                  Logout
+                  Cerrar Sesion
                 </div>
               </>
             ) : (

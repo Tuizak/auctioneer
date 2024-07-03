@@ -33,21 +33,21 @@ export const RegisterComp = () => {
   return (
     <>
       <div onClick={openForm} className="btn btn-outline-secondary mx-2">
-        Register
+        Registrar
       </div>
       <Modal centered show={showForm} onHide={closeForm}>
         <form onSubmit={submitForm}>
           <Modal.Header>
-            <Modal.Title>Register</Modal.Title>
+            <Modal.Title>Registrar</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form.Group>
-              <Form.Label>Email Address</Form.Label>
+              <Form.Label>Correo Electronico</Form.Label>
               <Form.Control type="email" required ref={emailRef} />
             </Form.Group>
             <Form.Group>
-              <Form.Label>Password</Form.Label>
+              <Form.Label>Contraseña</Form.Label>
               <Form.Control type="password" required ref={passwordRef} />
             </Form.Group>
             <Form.Group>

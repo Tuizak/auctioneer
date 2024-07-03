@@ -1,9 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import Countdown from 'react-countdown';
 import { AuthContext } from '../../context/AuthContext';
+import PayPalCheckout from '../paypalCheckout';
 
-const renderer = ({ days, hours, minutes, seconds, completed, props }) => {
+const renderer = ({ days, hours, minutes, seconds, completed, setShowPayment, item, owner, bidAuction, endAuction }) => {
   if (completed) {
+    console.log('Countdown completed');
     return null;
   }
 
@@ -13,7 +15,7 @@ const renderer = ({ days, hours, minutes, seconds, completed, props }) => {
         <div
           style={{
             height: '320px',
-            backgroundImage: `url(${props.item.imgUrl})`,
+            backgroundImage: `url(${item.imgUrl})`,
             backgroundSize: 'contain',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
@@ -22,43 +24,58 @@ const renderer = ({ days, hours, minutes, seconds, completed, props }) => {
         />
 
         <div className="card-body">
-          <p className="lead display-6">{props.item.title}</p>
-          <div className="d-flex jsutify-content-between align-item-center">
+          <p className="lead display-6">{item.title}</p>
+          <div className="d-flex justify-content-between align-items-center">
             <h5>
-              {days * 24 + hours} hr: {minutes} min: {seconds} sec
+              {hours} hr: {minutes} min: {seconds} sec
             </h5>
           </div>
-          <p className="card-text">{props.item.desc}</p>
-          <div className="d-flex justify-content-between align-item-center">
+          <p className="card-text">{item.desc}</p>
+          <div className="d-flex justify-content-between align-items-center">
             <div>
-              {!props.owner ? (
+              {!owner ? (
                 <div
-                  onClick={() => props.bidAuction()}
+                  onClick={() => {
+                    console.log('Bid action');
+                    bidAuction();
+                  }}
                   className="btn btn-outline-secondary"
                 >
-                  Bid
+                  Apostar
                 </div>
-              ) : props.owner.email === props.item.email ? (
+              ) : owner.email === item.email ? (
                 <div
-                  onClick={() => props.endAuction(props.item.id)}
+                  onClick={() => {
+                    console.log('End auction action');
+                    endAuction(item.id);
+                  }}
                   className="btn btn-outline-secondary"
                 >
-                  Cancel Auction
+                  Cancelar
                 </div>
-              ) : props.owner.email === props.item.curWinner ? (
-                <p className="display-6">Winner</p>
+              ) : owner.email === item.curWinner ? (
+                <div
+                  onClick={() => {
+                    console.log('Set showPayment to true');
+                    setShowPayment(true);
+                  }}
+                  className="btn btn-outline-secondary"
+                >
+                  Pagar
+                </div>
               ) : (
                 <div
-                  onClick={() =>
-                    props.bidAuction(props.item.id, props.item.curPrice)
-                  }
+                  onClick={() => {
+                    console.log('Bid action with id and price');
+                    bidAuction(item.id, item.curPrice);
+                  }}
                   className="btn btn-outline-secondary"
                 >
-                  Bid
+                  Ofertar
                 </div>
               )}
             </div>
-            <p className="display-6">${props.item.curPrice}</p>
+            <p className="display-6">${item.curPrice}</p>
           </div>
         </div>
       </div>
@@ -67,17 +84,29 @@ const renderer = ({ days, hours, minutes, seconds, completed, props }) => {
 };
 
 export const AuctionCard = ({ item }) => {
-  let expiredDate = item.duration;
+  const expiredDate = new Date(item.duration);
   const { currentUser, bidAuction, endAuction } = useContext(AuthContext);
+  const [showPayment, setShowPayment] = useState(false);
+
+  const handlePaymentSuccess = (orderID) => {
+    console.log('Payment successful with Order ID:', orderID);
+    setShowPayment(false);
+  };
 
   return (
-    <Countdown
-      owner={currentUser}
-      date={expiredDate}
-      bidAuction={bidAuction}
-      endAuction={endAuction}
-      item={item}
-      renderer={renderer}
-    />
+    <>
+      {showPayment ? (
+        <PayPalCheckout amount={item.curPrice} onSuccess={handlePaymentSuccess} />
+      ) : (
+        <Countdown
+          owner={currentUser}
+          date={expiredDate}
+          bidAuction={bidAuction}
+          endAuction={endAuction}
+          item={item}
+          renderer={(props) => renderer({ ...props, setShowPayment, item, owner: currentUser, bidAuction, endAuction })}
+        />
+      )}
+    </>
   );
 };

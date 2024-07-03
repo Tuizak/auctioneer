@@ -3,14 +3,13 @@ import 'firebase/auth';
 import 'firebase/storage';
 import 'firebase/firestore';
 
-// Use your own configs!
 const app = firebase.initializeApp({
-  apiKey: 'AIzaSyBCS_66Lh7MZvbYbwoM0YMv4oHpDcexAps',
-  authDomain: 'auctioneer-7020f.firebaseapp.com',
-  projectId: 'auctioneer-7020f',
-  storageBucket: 'auctioneer-7020f.appspot.com',
-  messagingSenderId: '159246459335',
-  appId: '1:159246459335:web:b200f4e877df1aa00fb9e2',
+  apiKey: "AIzaSyB_6fmxqqw_9PGGWkoM6mciF_w0qTZDrfs",
+  authDomain: "ropart-bd824.firebaseapp.com",
+  projectId: "ropart-bd824",
+  storageBucket: "ropart-bd824.appspot.com",
+  messagingSenderId: "884433315121",
+  appId: "1:884433315121:web:8785f8a7bc124ff943fc10",
 });
 
 export const timestamp = firebase.firestore.FieldValue.serverTimestamp;

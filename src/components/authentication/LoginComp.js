@@ -39,17 +39,17 @@ export const LoginComp = () => {
           <Modal.Body>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form.Group>
-              <Form.Label>Email Address</Form.Label>
+              <Form.Label>Correo Electronico</Form.Label>
               <Form.Control type="email" required ref={emailRef} />
             </Form.Group>
             <Form.Group>
-              <Form.Label>Password</Form.Label>
+              <Form.Label>Contraseña</Form.Label>
               <Form.Control type="password" required ref={passwordRef} />
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={closeForm}>
-              Cancel
+              Cancelar
             </Button>
             <Button variant="primary" type="submit">
               Login

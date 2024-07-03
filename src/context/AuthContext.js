@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
 
   const bidAuction = (auctionId, price) => {
     if (!currentUser) {
-      return setGlobalMsg('Please login first');
+      return setGlobalMsg('Inicia sesion para poder apostar');
     }
 
     let newPrice = Math.floor((price / 100) * 110);
